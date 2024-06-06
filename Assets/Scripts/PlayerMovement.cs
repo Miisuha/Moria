@@ -21,6 +21,10 @@ public class PlayerMovement : MonoBehaviour
     public bool running => Mathf.Abs(velocity.x) > 0.25f || Mathf.Abs(inputAxis) > 0.25f;
     public bool sliding => (inputAxis > 0f && velocity.x < 0f) || (inputAxis < 0f && velocity.x > 0f);
     public bool falling => velocity.y < 0f && !grounded;
+    public AudioSource src;
+    public AudioClip sfx1;
+
+
 
     private void Awake()
     {
@@ -102,6 +106,9 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = jumpForce;
             jumping = true;
+
+            src.clip = sfx1;
+            src.Play();
         }
     }
 

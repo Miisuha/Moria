@@ -3,17 +3,41 @@ using UnityEngine;
 public class Goomba : MonoBehaviour
 {
     public Sprite flatSprite;
+    public AudioSource src;
+    public AudioClip die,kill;
 
      private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             Player player = collision.gameObject.GetComponent<Player>();
-
-            if (collision.transform.DotTest(transform, Vector2.down)) {
+            
+            if (player.starpower) {
+                Hit();
+                GameManager.Instance.scoreKill();
+                src.clip = kill;
+                src.Play();
+            }
+            else if (player.big && collision.transform.DotTest(transform, Vector2.down)) {
                 Flatten();
+                GameManager.Instance.scoreKill();
+            }
+            else if (player.big) {
+                Hit();
+                GameManager.Instance.scoreKill();
+                player.Hit();
+                src.clip = kill;
+                src.Play();
+            } 
+            else if (collision.transform.DotTest(transform, Vector2.down)) {
+                Flatten();
+                GameManager.Instance.scoreKill();
+                src.clip = kill;
+                src.Play();
             } else {
                 player.Hit();
+                src.clip = die;
+                src.Play();
             }
         }
     }
@@ -21,6 +45,9 @@ public class Goomba : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Shell")) {
             Hit();
+            GameManager.Instance.scoreKill();
+            src.clip = kill;
+            src.Play();
         }
     }
 

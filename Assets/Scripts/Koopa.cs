@@ -7,17 +7,43 @@ public class Koopa : MonoBehaviour
 
     private bool shelled;
     private bool pushed;
+    public AudioSource src;
+    public AudioClip die,kill;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!shelled && collision.gameObject.CompareTag("Player"))
         {
             Player player = collision.gameObject.GetComponent<Player>();
-
-            if (collision.transform.DotTest(transform, Vector2.down)) {
+            if (player.starpower) {
+                Hit();
+                GameManager.Instance.scoreKill();
+                src.clip = kill;
+                src.Play();
+                
+            }
+            else if (player.big && collision.transform.DotTest(transform, Vector2.down)) {
                 EnterShell();
+                GameManager.Instance.scoreKill();
+                src.clip = kill;
+                src.Play();
+            } 
+            else if (player.big) {
+                Hit();
+                GameManager.Instance.scoreKill();
+                src.clip = kill;
+                src.Play();
+                player.Hit();
+            }           
+            else if (collision.transform.DotTest(transform, Vector2.down)) {
+                EnterShell();
+                GameManager.Instance.scoreKill();
+                src.clip = kill;
+                src.Play();
             }  else {
                 player.Hit();
+                src.clip = die;
+                src.Play();
             }
         }
     }
@@ -30,17 +56,29 @@ public class Koopa : MonoBehaviour
             {
                 Vector2 direction = new Vector2(transform.position.x - other.transform.position.x, 0f);
                 PushShell(direction);
+                GameManager.Instance.scoreKill();
+                src.clip = kill;
+                src.Play();
             }
             else
             {
                 Player player = other.GetComponent<Player>();
+
                 player.Hit();
                 
+                if(!player.big) {
+                    src.clip = die;
+                    src.Play();
+                }            
             }
         }
         else if (!shelled && other.gameObject.layer == LayerMask.NameToLayer("Shell"))
         {
             Hit();
+            GameManager.Instance.scoreKill();
+            src.clip = kill;
+            src.Play();
+            
         }
     }
 
