@@ -38,14 +38,20 @@ public class FlagPole : MonoBehaviour
         yield return MoveTo(player, player.position + Vector3.right + Vector3.down);
         yield return MoveTo(player, castle.position);
 
-        
-
         player.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(3.5f);
 
-        GameManager.Instance.LoadLevel(nextWorld, nextStage);
+        if (GameManager.Instance.world == 1 && GameManager.Instance.stage == 2)
+        {
+            GameManager.Instance.Win();
+        }
+        else
+        {
+            GameManager.Instance.LoadLevel(nextWorld, nextStage);
+        }
     }
+
 
     private IEnumerator MoveTo(Transform subject, Vector3 position)
     {

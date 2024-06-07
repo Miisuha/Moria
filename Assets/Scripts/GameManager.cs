@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,24 +11,33 @@ public class GameManager : MonoBehaviour
     public int score { get; private set; }
     public int lives { get; private set; }
     public int coins { get; private set; }
+    private HashSet<string> destroyedObjects;
 
     public AudioSource src;
-    public AudioClip life,coin, over;
-    
-    
+    public AudioClip life, coin, over;
+
+    private Vector3 initialPlayerPosition;
+    private GameObject player;
+    private ScoreManager scoreManager;
+
     private void Awake()
     {
-        if (Instance != null) {
+        if (Instance != null)
+        {
             DestroyImmediate(gameObject);
-        } else {
+        }
+        else
+        {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            destroyedObjects = new HashSet<string>();
         }
     }
 
     private void OnDestroy()
     {
-        if (Instance == this) {
+        if (Instance == this)
+        {
             Instance = null;
         }
     }
@@ -35,8 +45,21 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Application.targetFrameRate = 60;
-        //NewGame();
+        // NewGame();
         SceneManager.LoadScene("MainMenu");
+
+        scoreManager = FindObjectOfType<ScoreManager>();
+        if (scoreManager == null)
+        {
+            GameObject scoreManagerObject = new GameObject("ScoreManager");
+            scoreManager = scoreManagerObject.AddComponent<ScoreManager>();
+        }
+    }
+
+    public void RegisterPlayer(GameObject player)
+    {
+        this.player = player;
+        initialPlayerPosition = player.transform.position;
     }
 
     public void NewGame()
@@ -44,16 +67,29 @@ public class GameManager : MonoBehaviour
         lives = 3;
         coins = 0;
         score = 0;
+        destroyedObjects.Clear();
 
         LoadLevel(1, 1);
     }
 
     public void GameOver()
     {
+        // Save the score
+        scoreManager.SaveScore(score);
+
         // TODO: show game over screen
         src.clip = over;
         src.Play();
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("GameOver");
+    }
+
+    public void Win()
+    {
+        // Save the score
+        scoreManager.SaveScore(score);
+
+        // TODO: show game over screen
+        SceneManager.LoadScene("Win");
     }
 
     public void LoadLevel(int world, int stage)
@@ -79,19 +115,36 @@ public class GameManager : MonoBehaviour
     {
         lives--;
 
-        if (lives > 0) {
+        if (lives > 0)
+        {
             LoadLevel(world, stage);
-        } else {
+        }
+        else
+        {
             GameOver();
         }
     }
 
-    public void AddCoin()    
+    private void ResetPlayerPosition()
+    {
+        if (player != null)
+        {
+            player.transform.position = initialPlayerPosition;
+            // Optionally reset player's velocity and other states here if needed
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.velocity = Vector2.zero;
+            }
+        }
+    }
+
+    public void AddCoin()
     {
         src.clip = coin;
         src.Play();
         coins++;
-        score+=200;
+        score += 200;
 
         if (coins == 20)
         {
@@ -107,9 +160,26 @@ public class GameManager : MonoBehaviour
         lives++;
     }
 
-    public void scoreKill()    
+    public void scoreKill()
     {
-        score+=100;
+        score += 100;
     }
-    
+
+    public void RegisterDestroyedObject(string objectId)
+    {
+        if (!destroyedObjects.Contains(objectId))
+        {
+            destroyedObjects.Add(objectId);
+        }
+    }
+
+    public bool IsObjectDestroyed(string objectId)
+    {
+        return destroyedObjects.Contains(objectId);
+    }
+
+    public List<int> GetTopScores()
+    {
+        return scoreManager.GetTopScores();
+    }
 }

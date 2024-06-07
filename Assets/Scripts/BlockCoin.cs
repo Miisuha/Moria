@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BlockCoin : MonoBehaviour
-{
+    {
     private void Start() {
         GameManager.Instance.AddCoin();
         

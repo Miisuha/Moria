@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8001254531702610703}
   - component: {fileID: 4647747251675753674}
   - component: {fileID: 1985748886192237130}
+  - component: {fileID: -5292373543292676212}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -45,12 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9b71d4ec201f643a43f24560b72d00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lives: 3
-  coins: 0
   src: {fileID: 1985748886192237130}
   life: {fileID: 8300000, guid: 35c4479c0ed3a114faa8fd222da445f3, type: 3}
   coin: {fileID: 8300000, guid: 6cb6893f74eba814eb704bde66bbc557, type: 3}
   over: {fileID: 8300000, guid: 04ec6f98e2b9a2f45a7b67f46c18aea6, type: 3}
+  win: {fileID: 8300000, guid: 109f0cecdead6a843a5557d325811856, type: 3}
 --- !u!82 &1985748886192237130
 AudioSource:
   m_ObjectHideFlags: 0
@@ -147,3 +147,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-5292373543292676212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8927140888595800760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b158c0ee929d3f346bbc4810668d9511, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
     public Button newGameButton;
     public Button quitGameButton;
+    public Button mainMenuButton;
 
     private void Start()
     {
@@ -24,6 +26,14 @@ public class MenuManager : MonoBehaviour
         else
         {
             Debug.LogError("Quit Game Button is not assigned in the inspector.");
+        }
+        if (mainMenuButton != null)
+        {
+            mainMenuButton.onClick.AddListener(MainMenu);
+        }
+        else
+        {
+            Debug.LogError("Main Menu Button is not assigned in the inspector.");
         }
     }
     public void StartNewGame()
@@ -46,5 +56,9 @@ public class MenuManager : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }
